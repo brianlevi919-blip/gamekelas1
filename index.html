@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<!-- saved from url=(0036)https://pembelajarn-game.vercel.app/ -->
+<html lang="id"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f7ff">
+  <title>PintarYuk! — Main sambil belajar</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #263354;
+      --muted: #7883a2;
+      --purple: #7064df;
+      --purple-dark: #5549c5;
+      --lavender: #eeecff;
+      --yellow: #ffd86a;
+      --green: #2ba77c;
+      --red: #df896c;
+      --line: #e9eaf4;
+      --paper: #fff;
+      --shadow: 0 16px 42px rgba(58, 64, 112, .09);
+      font-family: "Trebuchet MS", "Arial Rounded MT Bold", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 9% 12%, rgba(255, 216, 106, .20), transparent 25%),
+        radial-gradient(ellipse at 90% 80%, rgba(151, 221, 207, .2), transparent 27%),
+        #f6f7ff;
+    }
+    button { font: inherit; }
+    button:focus-visible, select:focus-visible { outline: 3px solid #ffbd52; outline-offset: 3px; }
+    .app-shell { width: min(1120px, calc(100% - 44px)); margin: 0 auto; padding: 22px 0 40px; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .brand { display: flex; align-items: center; gap: 11px; font-size: 21px; font-weight: 900; letter-spacing: -.5px; }
+    .brand-mark {
+      display: grid; width: 43px; height: 43px; place-items: center; border-radius: 15px;
+      background: var(--yellow); box-shadow: 0 5px 0 #f3c24a; font-size: 24px;
+    }
+    .top-actions { display: flex; align-items: center; gap: 10px; }
+    .icon-button, .teacher-button {
+      display: inline-flex; min-height: 46px; align-items: center; justify-content: center; gap: 8px;
+      border: 1px solid var(--line); border-radius: 15px; background: var(--paper); color: var(--ink);
+      padding: 0 14px; cursor: pointer; font-weight: 800; box-shadow: 0 3px 8px rgba(48, 54, 100, .04);
+    }
+    .icon-button { min-width: 46px; padding: 0 12px; font-size: 19px; }
+    .teacher-button { color: #5549c5; }
+    .icon-button:hover, .teacher-button:hover { transform: translateY(-1px); border-color: #cbc8f4; }
+    .hero {
+      display: grid; grid-template-columns: 1.15fr .85fr; align-items: center; gap: 24px;
+      margin-top: 25px; padding: 28px 36px; overflow: hidden; position: relative;
+      min-height: 220px; border: 1px solid #f2e7c7; border-radius: 28px;
+      background: linear-gradient(110deg, #fff4cc 0%, #fff8df 58%, #f5f2ff 100%);
+    }
+    .hero::after { content: "✦"; position: absolute; top: 16px; right: 43%; color: #f0bf3e; font-size: 25px; opacity: .8; }
+    .eyebrow { margin: 0 0 9px; color: #8873c6; font-size: 12px; font-weight: 900; letter-spacing: 1.7px; text-transform: uppercase; }
+    h1 { margin: 0; font-size: clamp(29px, 4vw, 43px); letter-spacing: -1.6px; line-height: 1.12; }
+    .hero-copy { max-width: 500px; margin: 12px 0 0; color: #6f7691; font-size: 16px; line-height: 1.55; }
+    .hero-art { display: flex; align-items: center; justify-content: center; min-height: 150px; }
+    .art-circle {
+      display: grid; width: 154px; height: 154px; place-items: center; border: 9px solid rgba(255,255,255,.85);
+      border-radius: 50%; background: #e4ddff; box-shadow: 0 12px 0 rgba(112, 100, 223, .11); font-size: 78px;
+      transform: rotate(4deg);
+    }
+    .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 12px; margin: 27px 2px 13px; }
+    h2 { margin: 0; font-size: 20px; letter-spacing: -.4px; }
+    .section-hint { margin: 0; color: var(--muted); font-size: 13px; }
+    .game-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .game-card {
+      min-height: 184px; padding: 19px; text-align: left; cursor: pointer; color: var(--ink);
+      border: 2px solid transparent; border-radius: 22px; background: var(--paper); box-shadow: var(--shadow);
+      transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease;
+    }
+    .game-card:hover { transform: translateY(-3px); box-shadow: 0 18px 34px rgba(58, 64, 112, .13); }
+    .game-card.selected { border-color: var(--purple); }
+    .game-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+    .game-icon { display: grid; width: 55px; height: 55px; place-items: center; border-radius: 18px; font-size: 29px; }
+    .game-tag { padding: 7px 10px; border-radius: 20px; background: #f5f4ff; color: #7669cb; font-size: 11px; font-weight: 900; }
+    .game-card h3 { margin: 14px 0 5px; font-size: 17px; }
+    .game-card p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
+    .start-row { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-top: 22px; }
+    .teacher-note { color: var(--muted); font-size: 13px; line-height: 1.5; }
+    .primary-button {
+      display: inline-flex; min-height: 54px; align-items: center; justify-content: center; gap: 10px;
+      padding: 0 24px; border: 0; border-radius: 16px; background: var(--purple); color: #fff;
+      box-shadow: 0 5px 0 var(--purple-dark); cursor: pointer; font-size: 16px; font-weight: 900;
+      transition: transform .15s, box-shadow .15s, background .15s;
+    }
+    .primary-button:hover { background: #6256d2; transform: translateY(-2px); box-shadow: 0 7px 0 var(--purple-dark); }
+    .primary-button:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--purple-dark); }
+    .main-view { display: none; }
+    .main-view.active { display: block; }
+    .home-view.hidden { display: none; }
+    .game-topline { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 24px 2px 13px; }
+    .back-button { border: 0; padding: 8px 0; background: transparent; color: #7064c7; cursor: pointer; font-weight: 900; }
+    .round-label { color: var(--muted); font-size: 13px; font-weight: 800; }
+    .score-pill { padding: 9px 13px; border: 1px solid #f5e6b8; border-radius: 20px; background: #fff8df; color: #84621b; font-size: 13px; font-weight: 900; }
+    .progress-track { height: 10px; margin: 0 1px 18px; overflow: hidden; border-radius: 20px; background: #e7e8f3; }
+    .progress-fill { width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #8075ea, #b4aaf7); transition: width .35s ease; }
+    .play-card { min-height: 430px; padding: clamp(22px, 5vw, 38px); border: 1px solid #ececf4; border-radius: 27px; background: var(--paper); box-shadow: var(--shadow); }
+    .prompt { margin: 0; text-align: center; font-size: clamp(20px, 3vw, 27px); letter-spacing: -.5px; }
+    .prompt-sub { margin: 7px 0 0; color: var(--muted); text-align: center; font-size: 14px; }
+    .listen-button {
+      display: block; min-height: 43px; margin: 12px auto 0; padding: 0 15px;
+      border: 1px solid #dedaf8; border-radius: 14px; background: #fff; color: #6358bd;
+      cursor: pointer; font-size: 14px; font-weight: 900;
+    }
+    .listen-button:hover { background: #f0eeff; }
+    .listen-button[hidden] { display: none; }
+    .syllable-board { display: flex; width: 100%; flex-direction: column; align-items: center; gap: 12px; }
+    .syllable-slots { display: flex; width: 100%; align-items: center; justify-content: center; flex-wrap: nowrap; gap: clamp(3px, 1.3vw, 8px); }
+    .syllable-slot {
+      display: inline-flex; flex: 0 0 clamp(42px, 13.2vw, 72px); width: clamp(42px, 13.2vw, 72px);
+      height: clamp(48px, 15vw, 56px); align-items: center; justify-content: center; padding: 0;
+      border: 2px dashed #bcb5ef; border-radius: 13px; background: #fff; color: #6257c4;
+      cursor: default; font-size: clamp(14px, 4.5vw, 19px); font-weight: 900; line-height: 1; text-align: center;
+    }
+    .syllable-slot[type="button"] { cursor: pointer; }
+    .syllable-slot.filled { border-style: solid; background: #f0eeff; }
+    .syllable-plus {
+      display: inline-flex; flex: 0 0 clamp(12px, 4vw, 18px); width: clamp(12px, 4vw, 18px);
+      height: clamp(48px, 15vw, 56px); align-items: center; justify-content: center;
+      color: #857ad4; font-size: clamp(16px, 5vw, 22px); font-weight: 900; line-height: 1;
+    }
+    .syllable-hint { color: var(--muted); font-size: 12px; text-align: center; }
+    .odd-objects { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; }
+    .odd-object { display: grid; width: 70px; height: 70px; place-items: center; border-radius: 17px; background: #fff; box-shadow: 0 3px 9px #e1e1ef; font-size: 38px; }
+    .group-label { width: 100%; color: var(--muted); font-size: 12px; font-weight: 800; text-align: center; }
+    .compare-groups { display: grid; width: 100%; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .compare-group { min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 7px; }
+    .visual-groups { display: flex; width: 100%; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px; }
+    .visual-stage {
+      display: flex; width: 100%; min-height: 178px; align-items: center; justify-content: center; gap: 10px;
+      margin: 19px auto 21px; padding: 12px; border-radius: 21px; background: #f7f6ff;
+    }
+    .picture-emoji { display: block; text-align: center; font-size: clamp(70px, 12vw, 104px); line-height: 1; filter: drop-shadow(0 5px 0 rgba(80, 68, 160, .08)); }
+    .picture-word { margin-top: 10px; color: #8d83c9; font-size: 13px; font-weight: 900; text-align: center; }
+    .count-objects { display: flex; max-width: 610px; align-items: center; justify-content: center; flex-wrap: wrap; gap: 7px; }
+    .count-icon { display: grid; width: 41px; height: 41px; place-items: center; border-radius: 12px; background: white; box-shadow: 0 2px 7px #dfe0ee; font-size: 24px; }
+    .math-symbol { margin: 0 7px; color: #857ad4; font-size: 29px; font-weight: 900; }
+    .answer-grid {
+      display: flex; width: min(100%, 760px); align-items: stretch; justify-content: center; flex-wrap: wrap;
+      gap: 13px; margin: 0 auto;
+    }
+    .answer-button {
+      display: flex; flex: 0 1 calc((100% - 26px) / 3); width: 100%; max-width: 240px; min-width: 0;
+      height: 68px; align-items: center; justify-content: center; padding: 10px 12px; border: 2px solid #e8e7f2;
+      border-radius: 18px; background: #fff; color: var(--ink); cursor: pointer; font-size: 22px;
+      font-weight: 900; line-height: 1.15; text-align: center; overflow-wrap: anywhere;
+      transition: transform .14s, border-color .14s, background .14s;
+    }
+    .answer-button:hover:not(:disabled) { transform: translateY(-2px); border-color: #a7a0ed; background: #f9f8ff; }
+    .answer-button:disabled { cursor: default; }
+    .answer-button.correct { border-color: #73cfad; background: #eafff5; color: #238a66; }
+    .answer-button.wrong { border-color: #f0c4b5; background: #fff7f2; color: #a86e59; animation: nudge .25s ease; }
+    .feedback { min-height: 28px; margin: 14px 0 0; color: var(--green); text-align: center; font-size: 16px; font-weight: 900; }
+    .feedback.try-again { color: #9a765d; font-size: 15px; }
+    .end-card { display: none; padding: 24px 0 4px; text-align: center; }
+    .end-card.visible { display: block; }
+    .end-icon { margin: 0 auto 15px; font-size: 70px; animation: bounce .7s ease infinite alternate; }
+    .end-card h2 { font-size: 30px; }
+    .end-card p { margin: 10px 0 22px; color: var(--muted); }
+    .play-content.hidden { display: none; }
+    .footer-note { margin: 26px 0 0; color: #99a0b6; text-align: center; font-size: 12px; }
+    .modal-backdrop { display: none; position: fixed; z-index: 4; inset: 0; align-items: center; justify-content: center; padding: 18px; background: rgba(36, 42, 75, .35); backdrop-filter: blur(4px); }
+    .modal-backdrop.open { display: flex; }
+    .settings-panel { width: min(460px, 100%); padding: 25px; border-radius: 25px; background: white; box-shadow: 0 25px 80px rgba(26, 30, 60, .22); }
+    .modal-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 15px; margin-bottom: 20px; }
+    .modal-heading h2 { margin: 0; font-size: 22px; }
+    .modal-heading p { margin: 6px 0 0; color: var(--muted); font-size: 13px; }
+    .close-button { width: 38px; height: 38px; border: 0; border-radius: 12px; background: #f3f2fb; color: #666b86; cursor: pointer; font-size: 22px; }
+    .field { margin-top: 16px; }
+    .field label { display: block; margin-bottom: 8px; font-size: 13px; font-weight: 900; }
+    .field select {
+      width: 100%; min-height: 48px; padding: 0 13px; border: 1px solid #dedfed; border-radius: 13px;
+      background: #fff; color: var(--ink); font-size: 14px;
+    }
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 18px; padding-top: 17px; border-top: 1px solid var(--line); }
+    .toggle-copy strong { display: block; font-size: 14px; }
+    .toggle-copy span { display: block; margin-top: 4px; color: var(--muted); font-size: 12px; }
+    .switch { position: relative; width: 52px; height: 30px; flex: 0 0 auto; }
+    .switch input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+    .switch-track { position: absolute; inset: 0; border-radius: 20px; background: #d7d9e7; cursor: pointer; transition: background .2s; }
+    .switch-track::after { content: ""; position: absolute; top: 4px; left: 4px; width: 22px; height: 22px; border-radius: 50%; background: white; box-shadow: 0 1px 4px #999; transition: transform .2s; }
+    .switch input:checked + .switch-track { background: #786ce0; }
+    .switch input:checked + .switch-track::after { transform: translateX(22px); }
+    .switch input:focus-visible + .switch-track { outline: 3px solid #ffbd52; outline-offset: 3px; }
+    .modal-actions { display: flex; gap: 10px; margin-top: 23px; }
+    .modal-actions .primary-button { flex: 1; min-height: 49px; font-size: 14px; }
+    .reset-button { min-height: 49px; padding: 0 15px; border: 1px solid #ead8d1; border-radius: 14px; background: white; color: #986a59; cursor: pointer; font-size: 13px; font-weight: 900; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    @keyframes nudge { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+    @keyframes bounce { to { transform: translateY(-7px) rotate(5deg); } }
+    @media (max-width: 700px) {
+      .app-shell { width: min(100% - 28px, 540px); padding-top: 14px; }
+      .hero { grid-template-columns: 1fr auto; gap: 9px; padding: 24px 20px; min-height: 190px; }
+      .hero-art { min-height: auto; }
+      .art-circle { width: 103px; height: 103px; border-width: 6px; font-size: 53px; }
+      .hero-copy { font-size: 14px; }
+      .game-grid { grid-template-columns: 1fr; gap: 10px; }
+      .game-card { display: grid; grid-template-columns: 58px 1fr; min-height: 112px; align-items: center; gap: 0 14px; padding: 15px; }
+      .game-card-top { display: contents; }
+      .game-icon { grid-row: span 2; }
+      .game-tag { position: absolute; right: 30px; margin-top: 0; }
+      .game-card { position: relative; }
+      .game-card h3 { margin: 0 0 4px; padding-right: 58px; }
+      .game-card p { grid-column: 2; padding-right: 5px; }
+      .section-heading { align-items: flex-start; flex-direction: column; margin-top: 22px; }
+      .start-row { align-items: stretch; flex-direction: column-reverse; }
+      .start-row .primary-button { width: 100%; }
+      .teacher-note { text-align: center; }
+      .play-card { min-height: 400px; padding: 23px 15px; }
+      .visual-stage { min-height: 154px; }
+      .count-icon { width: 32px; height: 32px; border-radius: 9px; font-size: 19px; }
+      .count-objects { gap: 5px; }
+      .answer-grid { gap: 8px; }
+      .answer-button { height: 62px; padding: 8px 5px; font-size: 19px; }
+      .topbar { gap: 8px; }
+      .brand { font-size: 18px; }
+      .teacher-button { min-height: 42px; padding: 0 10px; font-size: 12px; }
+      .icon-button { min-width: 42px; min-height: 42px; }
+    }
+    @media (max-width: 390px) {
+      .app-shell { width: calc(100% - 22px); }
+      .brand { gap: 7px; font-size: 16px; }
+      .brand-mark { width: 37px; height: 37px; font-size: 21px; }
+      .teacher-button { gap: 4px; font-size: 11px; }
+      .hero { padding: 21px 15px; }
+      .art-circle { width: 83px; height: 83px; font-size: 43px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">✦</span><span>PintarYuk!</span></div>
+      <div class="top-actions">
+        <button class="icon-button" id="soundButton" type="button" aria-label="Matikan suara" title="Suara">🔊</button>
+        <button class="icon-button" id="fullscreenButton" type="button" aria-label="Layar penuh" title="Layar penuh">⛶</button>
+        <button class="teacher-button" id="settingsButton" type="button"><span aria-hidden="true">⚙</span> <span>Guru</span></button>
+      </div>
+    </header>
+
+    <main>
+      <section class="home-view" id="homeView">
+        <div class="hero">
+          <div>
+            <p class="eyebrow">Belajar jadi seru!</p>
+            <h1>Siap jadi<br>anak pintar?</h1>
+            <p class="hero-copy">Pilih permainan, lalu kita belajar bersama. Yuk, kumpulkan bintang!</p>
+          </div>
+          <div class="hero-art" aria-hidden="true"><div class="art-circle">🦉</div></div>
+        </div>
+        <div class="section-heading">
+          <h2>Mau bermain apa hari ini?</h2>
+          <p class="section-hint">Pilih satu permainan untuk mulai</p>
+        </div>
+        <div class="game-grid" role="group" aria-label="Pilih permainan">
+          <button class="game-card selected" type="button" data-game="letters" aria-pressed="true">
+            <div class="game-card-top"><span class="game-icon" style="background:#fff0d6" aria-hidden="true">🍉</span><span class="game-tag">Bahasa</span></div>
+            <h3>Susun Suku Kata</h3><p>Lengkapi kata benda dari potongan suku kata.</p>
+          </button>
+          <button class="game-card" type="button" data-game="math" aria-pressed="false">
+            <div class="game-card-top"><span class="game-icon" style="background:#e5f8ee" aria-hidden="true">🍎</span><span class="game-tag">Matematika</span></div>
+            <h3>Angka &amp; Logika</h3><p>Hitung, cari angka yang hilang, dan bandingkan.</p>
+          </button>
+          <button class="game-card" type="button" data-game="shapes" aria-pressed="false">
+            <div class="game-card-top"><span class="game-icon" style="background:#e9e7ff" aria-hidden="true">🔷</span><span class="game-tag">Bentuk &amp; Pola</span></div>
+            <h3>Pola &amp; Kelompok</h3><p>Lanjutkan urutan atau cari benda yang berbeda.</p>
+          </button>
+        </div>
+        <div class="start-row">
+          <span class="teacher-note" id="sessionNote">5 soal · Mudah · Siap dimainkan di kelas</span>
+          <button class="primary-button" id="startButton" type="button">Ayo mulai! <span aria-hidden="true">→</span></button>
+        </div>
+      </section>
+
+      <section class="main-view" id="gameView" aria-live="polite">
+        <div class="game-topline">
+          <button class="back-button" id="homeButton" type="button">← Pilih permainan</button>
+          <span class="round-label" id="roundLabel">Soal 1 dari 6</span>
+          <span class="score-pill" id="scoreLabel">⭐ 0 bintang</span>
+        </div>
+        <div class="progress-track" role="progressbar" aria-label="Kemajuan permainan" aria-valuemin="0" aria-valuemax="6" aria-valuenow="0">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="play-card">
+          <div class="play-content" id="playContent">
+            <h2 class="prompt" id="questionPrompt">Susun suku kata menjadi nama benda.</h2>
+            <p class="prompt-sub" id="questionSub">Pilih jawaban yang benar, ya!</p>
+            <button class="listen-button" id="listenButton" type="button">🔊 Dengarkan soal</button>
+            <div class="visual-stage" id="visualStage" aria-label="Gambar soal"></div>
+            <div class="answer-grid" id="answerGrid" role="group" aria-label="Pilihan jawaban"></div>
+            <p class="feedback" id="feedback" role="status" aria-live="polite"></p>
+          </div>
+          <div class="end-card" id="endCard">
+            <div class="end-icon" aria-hidden="true">🏆</div>
+            <h2>Hebat sekali!</h2>
+            <p id="endMessage">Kamu sudah menyelesaikan semua soal.</p>
+            <button class="primary-button" id="againButton" type="button">Main lagi <span aria-hidden="true">↻</span></button>
+          </div>
+        </div>
+      </section>
+    </main>
+    <p class="footer-note">PintarYuk! · Belajar sedikit demi sedikit, jadi makin hebat ✨</p>
+  </div>
+
+  <div class="modal-backdrop" id="settingsModal" role="presentation">
+    <section class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <div class="modal-heading">
+        <div><h2 id="settingsTitle">Pengaturan guru</h2><p>Atur permainan untuk kelas hari ini.</p></div>
+        <button class="close-button" id="closeSettings" type="button" aria-label="Tutup pengaturan">×</button>
+      </div>
+      <div class="field">
+        <label for="gameSelect">Permainan</label>
+        <select id="gameSelect">
+          <option value="letters">Susun Suku Kata</option>
+          <option value="math">Angka &amp; Logika</option>
+          <option value="shapes">Pola &amp; Kelompok</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="difficultySelect">Tingkat kesulitan</label>
+        <select id="difficultySelect">
+          <option value="easy">Mudah — angka sampai 10, lengkapi suku kata</option>
+          <option value="challenge">Tantangan — angka sampai 20, susun suku kata</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="questionCount">Jumlah soal</label>
+        <select id="questionCount">
+          <option value="6" selected>6 soal · sesi singkat</option>
+          <option value="7">7 soal</option>
+          <option value="8">8 soal · sesi lengkap</option>
+        </select>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-copy"><strong>Audio permainan</strong><span>Efek lembut dan ucapan bahasa Indonesia saja.</span><span id="audioStatus" role="status" aria-live="polite">Suara Indonesia akan digunakan bila tersedia.</span></div>
+        <label class="switch" aria-label="Efek suara">
+          <input id="soundToggle" type="checkbox" checked="">
+          <span class="switch-track"></span>
+        </label>
+      </div>
+      <div class="modal-actions">
+        <button class="reset-button" id="resetButton" type="button">Reset sesi</button>
+        <button class="primary-button" id="applySettings" type="button">Simpan pengaturan</button>
+      </div>
+    </section>
+  </div>
+  <div class="sr-only" id="announcement" aria-live="polite"></div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const games = {
+        letters: { name: "Susun Suku Kata", prompt: "Susun suku kata menjadi nama benda.", sub: "Lihat gambar, lalu lengkapi atau susun potongannya." },
+        math: { name: "Angka & Logika", prompt: "Ayo pikirkan jawabannya!", sub: "Gunakan gambar untuk membantu berhitung." },
+        shapes: { name: "Pola & Kelompok", prompt: "Perhatikan gambar baik-baik.", sub: "Lanjutkan pola atau cari yang berbeda." }
+      };
+      const letterItems = [
+        { emoji: "🍉", word: "Semangka", parts: ["SE", "MANG", "KA"] },
+        { emoji: "🐱", word: "Kucing", parts: ["KU", "CING"] },
+        { emoji: "🍌", word: "Pisang", parts: ["PI", "SANG"] },
+        { emoji: "🐟", word: "Ikan", parts: ["I", "KAN"] },
+        { emoji: "🏠", word: "Rumah", parts: ["RU", "MAH"] },
+        { emoji: "🌸", word: "Bunga", parts: ["BU", "NGA"] },
+        { emoji: "🦋", word: "Kupu-kupu", parts: ["KU", "PU", "KU", "PU"] },
+        { emoji: "🧢", word: "Topi", parts: ["TO", "PI"] },
+        { emoji: "👕", word: "Baju", parts: ["BA", "JU"] },
+        { emoji: "🍊", word: "Jeruk", parts: ["JE", "RUK"] },
+        { emoji: "🐘", word: "Gajah", parts: ["GA", "JAH"] },
+        { emoji: "🚲", word: "Sepeda", parts: ["SE", "PE", "DA"] }
+      ];
+      const mathObjects = [
+        { emoji: "🍎", word: "apel" },
+        { emoji: "⭐", word: "bintang" },
+        { emoji: "🐥", word: "anak ayam" },
+        { emoji: "🍓", word: "stroberi" }
+      ];
+      const shapes = [
+        { name: "lingkaran merah", shape: "●", color: "#ed6f70", value: "lingkaran merah" },
+        { name: "segitiga biru", shape: "▲", color: "#5b9be8", value: "segitiga biru" },
+        { name: "kotak kuning", shape: "■", color: "#efbd46", value: "kotak kuning" },
+        { name: "bintang hijau", shape: "★", color: "#48b78a", value: "bintang hijau" },
+        { name: "hati ungu", shape: "♥", color: "#9878d7", value: "hati ungu" }
+      ];
+      const patterns = [
+        { sequence: [0, 1, 0, 1], answer: 0 },
+        { sequence: [2, 2, 3, 2, 2], answer: 3 },
+        { sequence: [1, 2, 3, 1, 2], answer: 3 },
+        { sequence: [4, 0, 4, 0], answer: 4 },
+        { sequence: [3, 1, 3, 1], answer: 3 },
+        { sequence: [0, 2, 2, 0, 2], answer: 2 },
+        { sequence: [1, 3, 1, 3, 1], answer: 3 },
+        { sequence: [2, 0, 1, 2, 0], answer: 1 }
+      ];
+      const oddGroups = [
+        { items: [{ emoji: "🍎", name: "apel" }, { emoji: "🍌", name: "pisang" }, { emoji: "🍊", name: "jeruk" }, { emoji: "🐟", name: "ikan" }], odd: "ikan", reason: "Tiga gambar adalah buah. Ikan adalah hewan." },
+        { items: [{ emoji: "🐱", name: "kucing" }, { emoji: "🐶", name: "anjing" }, { emoji: "🐰", name: "kelinci" }, { emoji: "🥕", name: "wortel" }], odd: "wortel", reason: "Tiga gambar adalah hewan. Wortel adalah sayuran." },
+        { items: [{ emoji: "🧦", name: "kaus kaki" }, { emoji: "👕", name: "baju" }, { emoji: "👖", name: "celana" }, { emoji: "🍉", name: "semangka" }], odd: "semangka", reason: "Tiga gambar adalah pakaian. Semangka adalah buah." },
+        { items: [{ emoji: "🚌", name: "bus" }, { emoji: "🚲", name: "sepeda" }, { emoji: "🚗", name: "mobil" }, { emoji: "🌷", name: "bunga" }], odd: "bunga", reason: "Tiga gambar adalah kendaraan. Bunga adalah tanaman." }
+      ];
+      const cheers = ["Hebat!", "Pintar sekali!", "Yeay, benar!", "Kamu jago!", "Bagus sekali!"];
+      const $ = (selector) => document.querySelector(selector);
+      const homeView = $("#homeView");
+      const gameView = $("#gameView");
+      const settingsModal = $("#settingsModal");
+      const answerGrid = $("#answerGrid");
+      const visualStage = $("#visualStage");
+      const feedback = $("#feedback");
+      const progressTrack = $(".progress-track");
+      const gameCards = Array.from(document.querySelectorAll(".game-card"));
+
+      let selectedGame = "letters";
+      let difficulty = "easy";
+      let questionCount = 6;
+      let questions = [];
+      let questionIndex = 0;
+      let score = 0;
+      let soundEnabled = true;
+      let locked = false;
+      let nextTimer = null;
+      let audioContext = null;
+      let effectOutput = null;
+      const activeEffectSources = new Set();
+      const speechSupported = "speechSynthesis" in window && typeof SpeechSynthesisUtterance !== "undefined";
+      let speechTimer = null;
+      let assemblySlots = [];
+
+      function shuffle(values) {
+        const result = values.slice();
+        for (let i = result.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [result[i], result[j]] = [result[j], result[i]];
+        }
+        return result;
+      }
+
+      function pickWrongChoices(correct, pool, count) {
+        const alternatives = shuffle(Array.from(new Set(pool.filter((item) => item !== correct))));
+        return shuffle([correct, ...alternatives.slice(0, count - 1)]);
+      }
+
+      function randomInt(minimum, maximum) {
+        return Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
+      }
+
+      function makeLetterQuestions() {
+        const syllables = Array.from(new Set(letterItems.flatMap((entry) => entry.parts)));
+        return shuffle(letterItems).slice(0, questionCount).map((item, index) => {
+          const assemble = difficulty === "challenge" && index % 2 === 1;
+          if (assemble) {
+            const distractors = shuffle(syllables.filter((part) => !item.parts.includes(part))).slice(0, 2);
+            return {
+              type: "letters",
+              subType: "assemble",
+              item,
+              answer: item.parts.join("").replace(/-/g, ""),
+              tiles: shuffle(item.parts.concat(distractors)),
+              choices: [],
+              hint: "Ketuk potongan suku kata untuk menyusunnya. Jika keliru, ketuk kotaknya untuk membatalkan."
+            };
+          }
+          const missingIndex = index % item.parts.length;
+          const answer = item.parts[missingIndex];
+          return {
+            type: "letters",
+            subType: "complete",
+            item,
+            missingIndex,
+            answer,
+            choices: pickWrongChoices(answer, syllables, 3),
+            hint: "Ucapkan nama bendanya pelan-pelan. Dengarkan suku kata yang belum ada."
+          };
+        });
+      }
+
+      function makeMathQuestions() {
+        const max = difficulty === "challenge" ? 20 : 10;
+        return Array.from({ length: questionCount }, (_, index) => {
+          const object = mathObjects[index % mathObjects.length];
+          if (index % 4 === 0) {
+            const a = randomInt(1, max);
+            const b = randomInt(1, max);
+            return {
+              type: "math", subType: "compare", a, b, object, answer: a > b ? "Kiri" : a < b ? "Kanan" : "Sama",
+              choices: ["Kiri", "Sama", "Kanan"],
+              hint: "Hitung benda di kiri dan kanan. Kelompok mana yang jumlahnya lebih banyak?"
+            };
+          }
+          if (index % 4 === 1) {
+            const addition = Math.random() > 0.5;
+            const whole = randomInt(4, max);
+            const known = randomInt(1, whole - 1);
+            const a = addition ? known : whole;
+            const b = addition ? whole : known;
+            const answer = whole - known;
+            return {
+              type: "math", subType: "missing", a, b, operator: addition ? "+" : "−", answer, object,
+              choices: pickWrongChoices(answer, Array.from({ length: max }, (_, n) => n + 1), 3),
+              hint: addition
+                ? "Bayangkan jumlah benda yang sudah terlihat. Berapa lagi yang dibutuhkan?"
+                : "Kurangi perlahan dari jumlah awal. Berapa yang harus diambil?"
+            };
+          }
+          if (index % 4 === 3) {
+            const a = randomInt(2, Math.max(3, max - 3));
+            const b = randomInt(1, Math.min(5, max - a));
+            const c = randomInt(1, Math.min(5, a + b - 1));
+            const answer = a + b - c;
+            return {
+              type: "math", subType: "two-step", a, b, c, operator: "−", answer, object,
+              choices: pickWrongChoices(answer, Array.from({ length: max }, (_, n) => n + 1), 3),
+              hint: "Hitung dua kelompok yang bergabung dulu, lalu kurangi benda yang diambil."
+            };
+          }
+          const subtract = Math.random() > 0.5;
+          const a = subtract ? randomInt(2, max) : randomInt(1, max - 1);
+          const b = subtract ? randomInt(1, a - 1) : randomInt(1, max - a);
+          const answer = subtract ? a - b : a + b;
+          return {
+            type: "math", subType: "calculate", a, b, operator: subtract ? "−" : "+", answer, object,
+            choices: pickWrongChoices(answer, Array.from({ length: max }, (_, n) => n + 1), 3),
+            hint: "Hitung benda satu per satu. Untuk pengurangan, coret benda yang diambil."
+          };
+        });
+      }
+
+      function makeShapeQuestions() {
+        let patternIndex = 0;
+        let groupIndex = 0;
+        return Array.from({ length: questionCount }, (_, index) => {
+          if (index % 2 === 0) {
+            const pattern = patterns[patternIndex++ % patterns.length];
+            return {
+              type: "shapes", subType: "pattern", pattern, answer: pattern.answer,
+              choices: pickWrongChoices(pattern.answer, [0, 1, 2, 3, 4], 3),
+              hint: "Perhatikan bentuk dan warna yang berulang. Apa yang muncul berikutnya?"
+            };
+          }
+          const group = oddGroups[groupIndex++ % oddGroups.length];
+          const oddItem = group.items.find((item) => item.name === group.odd);
+          const items = shuffle(group.items);
+          const answer = items.indexOf(oddItem);
+          return {
+            type: "shapes", subType: "odd", items, answer, reason: group.reason,
+            choices: shuffle([0, 1, 2, 3]),
+            hint: "Tiga gambar punya kesamaan. Cari satu gambar yang berbeda."
+          };
+        });
+      }
+
+      function makeQuestions() {
+        if (selectedGame === "letters") return makeLetterQuestions();
+        if (selectedGame === "math") return makeMathQuestions();
+        return makeShapeQuestions();
+      }
+
+      function updateHomeNote() {
+        $("#sessionNote").textContent = `${questionCount} soal · ${difficulty === "easy" ? "Mudah" : "Tantangan"} · Siap belajar bersama`;
+      }
+
+      function ensureAudioContext() {
+        if (!soundEnabled) return null;
+        try {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (!AudioCtx) return null;
+          if (!audioContext) {
+            audioContext = new AudioCtx();
+            effectOutput = audioContext.createGain();
+            effectOutput.gain.setValueAtTime(soundEnabled ? 0.42 : 0, audioContext.currentTime);
+            effectOutput.connect(audioContext.destination);
+          }
+          if (audioContext.state === "suspended") {
+            audioContext.resume().catch((error) => console.warn("Audio belum dapat dimulai.", error));
+          }
+          return audioContext;
+        } catch (error) {
+          console.warn("Efek suara tidak dapat diputar.", error);
+          return null;
+        }
+      }
+
+      function playCheer() {
+        if (!soundEnabled) return;
+        const context = ensureAudioContext();
+        if (!context) return;
+        const now = context.currentTime;
+        [392, 493.88, 587.33].forEach((frequency, index) => {
+          const start = now + index * 0.12;
+          const end = start + 0.2;
+          const oscillator = context.createOscillator();
+          const gain = context.createGain();
+          oscillator.type = "sine";
+          oscillator.frequency.setValueAtTime(frequency, start);
+          gain.gain.setValueAtTime(0.0001, start);
+          gain.gain.linearRampToValueAtTime(0.045, start + 0.025);
+          gain.gain.setValueAtTime(0.045, end - 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.0008, end - 0.005);
+          gain.gain.linearRampToValueAtTime(0, end);
+          oscillator.connect(gain);
+          gain.connect(effectOutput);
+          activeEffectSources.add(oscillator);
+          oscillator.addEventListener("ended", () => activeEffectSources.delete(oscillator), { once: true });
+          oscillator.start(start);
+          oscillator.stop(end + 0.01);
+        });
+      }
+
+      function cancelSpeech() {
+        if (speechTimer) {
+          window.clearTimeout(speechTimer);
+          speechTimer = null;
+        }
+        if (speechSupported) window.speechSynthesis.cancel();
+      }
+
+      function stopSound() {
+        cancelSpeech();
+        if (audioContext && effectOutput) {
+          const now = audioContext.currentTime;
+          effectOutput.gain.cancelScheduledValues(now);
+          effectOutput.gain.setValueAtTime(0, now);
+          activeEffectSources.forEach((oscillator) => {
+            try {
+              oscillator.stop(now);
+            } catch {
+              // Sumber yang sudah selesai tidak perlu dihentikan lagi.
+            }
+          });
+          activeEffectSources.clear();
+        }
+      }
+
+      function updateSoundControls() {
+        $("#soundButton").textContent = soundEnabled ? "🔊" : "🔇";
+        $("#soundButton").setAttribute("aria-label", soundEnabled ? "Matikan suara" : "Nyalakan suara");
+        $("#soundToggle").checked = soundEnabled;
+        if (!soundEnabled) {
+          stopSound();
+        } else if (audioContext && effectOutput) {
+          const now = audioContext.currentTime;
+          effectOutput.gain.cancelScheduledValues(now);
+          effectOutput.gain.setValueAtTime(0, now);
+          effectOutput.gain.linearRampToValueAtTime(0.42, now + 0.04);
+        }
+      }
+
+      function setSoundEnabled(enabled) {
+        soundEnabled = Boolean(enabled);
+        updateSoundControls();
+      }
+
+      function findIndonesianVoice() {
+        if (!speechSupported) return null;
+        const voices = window.speechSynthesis.getVoices().filter((voice) => /^id(?:[-_]|$)/i.test(voice.lang));
+        const indonesianVoices = voices.filter((voice) => /^id[-_]id$/i.test(voice.lang));
+        const candidates = indonesianVoices.length ? indonesianVoices : voices;
+        return candidates.find((voice) => /natural|neural|google|online|microsoft|gadis|damayanti/i.test(voice.name))
+          || candidates[0]
+          || null;
+      }
+
+      function speakIndonesian(text) {
+        if (!soundEnabled || !text) return;
+        if (!speechSupported) {
+          $("#audioStatus").textContent = "Teks-ke-suara tidak tersedia; gunakan teks pada layar.";
+          return;
+        }
+        const voice = findIndonesianVoice();
+        if (!voice) {
+          $("#audioStatus").textContent = "Suara bahasa Indonesia tidak tersedia di perangkat ini; gunakan teks pada layar.";
+          return;
+        }
+        if (speechTimer) window.clearTimeout(speechTimer);
+        window.speechSynthesis.cancel();
+        speechTimer = window.setTimeout(() => {
+          speechTimer = null;
+          const utterance = new SpeechSynthesisUtterance(`${text}... ${text}... ${text}.`);
+          utterance.voice = voice;
+          utterance.lang = voice.lang;
+          utterance.rate = 0.84;
+          utterance.pitch = 1;
+          utterance.volume = 0.78;
+          utterance.onerror = () => {
+            $("#audioStatus").textContent = "Suara bahasa Indonesia gagal diputar; gunakan teks pada layar.";
+          };
+          window.speechSynthesis.speak(utterance);
+        }, 100);
+      }
+
+      function questionSpeech(question) {
+        return question.type === "letters" ? question.item.word : "";
+      }
+
+      if (speechSupported) {
+        const updateVoiceStatus = () => {
+          if (findIndonesianVoice()) {
+            $("#audioStatus").textContent = "Suara bahasa Indonesia siap digunakan.";
+          }
+        };
+        if (typeof window.speechSynthesis.addEventListener === "function") {
+          window.speechSynthesis.addEventListener("voiceschanged", updateVoiceStatus);
+        } else {
+          window.speechSynthesis.onvoiceschanged = updateVoiceStatus;
+        }
+      }
+
+      function renderVisual(question) {
+        if (question.type === "letters") {
+          const parts = question.item.parts.map((part, index) => {
+            const value = question.subType === "assemble"
+              ? "?"
+              : index === question.missingIndex ? "?" : part.toLowerCase();
+            return `<span class="syllable-slot">${value}</span>`;
+          }).join('<span class="syllable-plus" aria-hidden="true">+</span>');
+          visualStage.innerHTML = `
+            <div class="syllable-board">
+              <div class="picture-emoji" aria-hidden="true">${question.item.emoji}</div>
+              <div class="syllable-slots" id="syllableSlots">${parts}</div>
+              ${question.subType === "assemble" ? '<span class="syllable-hint">Ketuk kotak suku kata untuk membatalkan pilihan.</span>' : ""}
+            </div>`;
+          return;
+        }
+        if (question.type === "math") {
+          const group = (count, label) => `
+            <div class="compare-group">
+              ${label ? `<span class="group-label">${label}</span>` : ""}
+              <div class="count-objects">${Array.from({ length: count }, () => `<span class="count-icon" aria-hidden="true">${question.object.emoji}</span>`).join("")}</div>
+            </div>`;
+          if (question.subType === "compare") {
+            visualStage.innerHTML = `<div class="compare-groups">${group(question.a, "Kiri")}${group(question.b, "Kanan")}</div>`;
+            $("#questionPrompt").textContent = "Kelompok mana yang lebih banyak?";
+            $("#questionSub").textContent = "Bandingkan jumlah benda di kiri dan kanan.";
+          } else if (question.subType === "missing") {
+            const equation = question.operator === "+"
+              ? `${question.a} + ? = ${question.b}`
+              : `${question.a} − ? = ${question.b}`;
+            visualStage.innerHTML = `<div class="syllable-board">${group(question.a, "Benda yang terlihat")}<span class="math-symbol">${question.operator}</span><span class="group-label">? = ${question.b}</span></div>`;
+            $("#questionPrompt").textContent = equation;
+            $("#questionSub").textContent = "Cari angka yang hilang.";
+          } else if (question.subType === "two-step") {
+            visualStage.innerHTML = `<div class="visual-groups">${group(question.a, "Kelompok 1")}<span class="math-symbol">+</span>${group(question.b, "Kelompok 2")}<span class="math-symbol">−</span>${group(question.c, "Diambil")}</div>`;
+            $("#questionPrompt").textContent = `${question.a} + ${question.b} − ${question.c} = ?`;
+            $("#questionSub").textContent = "Hitung dua langkah dengan bantuan gambar.";
+          } else {
+            visualStage.innerHTML = `<div class="visual-groups">${group(question.a, "Kelompok 1")}<span class="math-symbol">${question.operator}</span>${group(question.b, "Kelompok 2")}</div>`;
+            $("#questionPrompt").textContent = `${question.a} ${question.operator} ${question.b} = ?`;
+            $("#questionSub").textContent = "Hitung benda-bendanya, ya!";
+          }
+          return;
+        }
+        if (question.subType === "odd") {
+          visualStage.innerHTML = `<div class="odd-objects">${question.items.map((item) => `<span class="odd-object" role="img" aria-label="${item.name}">${item.emoji}</span>`).join("")}</div>`;
+          $("#questionPrompt").textContent = "Mana benda yang tidak sekelompok?";
+          $("#questionSub").textContent = "Pilih gambar yang berbeda dari tiga lainnya.";
+          return;
+        }
+        const sequenceHtml = question.pattern.sequence.map((shapeIndex) => {
+          const shape = shapes[shapeIndex];
+          return `<span aria-label="${shape.name}" style="color:${shape.color};font-size:clamp(34px,7vw,54px);line-height:1">${shape.shape}</span>`;
+        }).join('<span class="math-symbol" aria-hidden="true">·</span>');
+        visualStage.innerHTML = `<div class="count-objects">${sequenceHtml}<span class="math-symbol" aria-hidden="true">?</span></div>`;
+        $("#questionPrompt").textContent = games.shapes.prompt;
+        $("#questionSub").textContent = "Perhatikan bentuk dan warnanya.";
+      }
+
+      function choiceLabel(question, choice) {
+        if (question.type === "shapes" && question.subType === "odd") {
+          return `<span style="font-size:31px">${question.items[choice].emoji}</span><span class="sr-only">${question.items[choice].name}</span>`;
+        }
+        if (question.type !== "shapes") return String(choice);
+        const shape = shapes[choice];
+        return `<span style="color:${shape.color};font-size:31px;vertical-align:-2px">${shape.shape}</span><span class="sr-only"> ${shape.name}</span>`;
+      }
+
+      function renderAssemblySlots(question) {
+        const container = $("#syllableSlots");
+        container.innerHTML = question.item.parts.map((_, index) => {
+          const tileIndex = assemblySlots[index];
+          const value = tileIndex === null ? "?" : question.tiles[tileIndex].toLowerCase();
+          return `${index ? '<span class="syllable-plus" aria-hidden="true">+</span>' : ""}<button class="syllable-slot ${tileIndex === null ? "" : "filled"}" type="button" data-slot-index="${index}" aria-label="Suku kata ${index + 1}: ${tileIndex === null ? "kosong" : `${value}, ketuk untuk membatalkan`}">${value}</button>`;
+        }).join("");
+        container.querySelectorAll("[data-slot-index]").forEach((slot) => {
+          slot.addEventListener("click", () => {
+            if (locked) return;
+            const index = Number(slot.dataset.slotIndex);
+            const tileIndex = assemblySlots[index];
+            if (tileIndex === null) return;
+            assemblySlots[index] = null;
+            const tileButton = answerGrid.querySelector(`[data-tile-index="${tileIndex}"]`);
+            if (tileButton) tileButton.disabled = false;
+            renderAssemblySlots(question);
+          });
+        });
+      }
+
+      function selectSyllableTile(button, tileIndex, question) {
+        if (locked) return;
+        const existingSlot = assemblySlots.indexOf(tileIndex);
+        if (existingSlot !== -1) {
+          assemblySlots[existingSlot] = null;
+          button.disabled = false;
+          renderAssemblySlots(question);
+          return;
+        }
+        const emptySlot = assemblySlots.indexOf(null);
+        if (emptySlot === -1) return;
+        assemblySlots[emptySlot] = tileIndex;
+        button.disabled = true;
+        renderAssemblySlots(question);
+        if (!assemblySlots.includes(null)) {
+          const word = assemblySlots.map((index) => question.tiles[index]).join("");
+          if (word.toLocaleLowerCase("id-ID") === question.answer.toLocaleLowerCase("id-ID")) {
+            completeAnswer(question, button);
+          } else {
+            feedback.textContent = "Hampir! Coba ubah urutan suku katanya.";
+            feedback.className = "feedback try-again";
+          }
+        }
+      }
+
+      function renderQuestion() {
+        const question = questions[questionIndex];
+        locked = false;
+        assemblySlots = [];
+        feedback.textContent = "";
+        feedback.className = "feedback";
+        $("#questionPrompt").textContent = games[selectedGame].prompt;
+        $("#questionSub").textContent = games[selectedGame].sub;
+        renderVisual(question);
+        answerGrid.innerHTML = "";
+        if (question.type === "letters" && question.subType === "assemble") {
+          assemblySlots = new Array(question.item.parts.length).fill(null);
+          renderAssemblySlots(question);
+          question.tiles.forEach((tile, index) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "answer-button syllable-tile";
+            button.textContent = tile.toLowerCase();
+            button.setAttribute("aria-label", `Suku kata ${tile.toLowerCase()}, pilihan ${index + 1}`);
+            button.dataset.tileIndex = String(index);
+            button.addEventListener("click", () => selectSyllableTile(button, index, question));
+            answerGrid.appendChild(button);
+          });
+        } else question.choices.forEach((choice) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "answer-button";
+          button.innerHTML = choiceLabel(question, choice);
+          button.setAttribute("aria-label", question.type === "shapes"
+            ? question.subType === "odd" ? question.items[choice].name : shapes[choice].name
+            : String(choice));
+          button.addEventListener("click", () => selectAnswer(button, choice, question));
+          answerGrid.appendChild(button);
+        });
+        $("#roundLabel").textContent = `Soal ${questionIndex + 1} dari ${questionCount}`;
+        $("#scoreLabel").textContent = `⭐ ${score} ${score === 1 ? "bintang" : "bintang"}`;
+        $("#progressFill").style.width = `${(questionIndex / questionCount) * 100}%`;
+        progressTrack.setAttribute("aria-valuemax", String(questionCount));
+        progressTrack.setAttribute("aria-valuenow", String(questionIndex));
+        const syllableMode = question.type === "letters";
+        $("#listenButton").hidden = !syllableMode;
+        if (syllableMode) speakIndonesian(questionSpeech(question));
+        else cancelSpeech();
+      }
+
+      function selectAnswer(button, choice, question) {
+        if (locked) return;
+        if (choice !== question.answer) {
+          button.classList.add("wrong");
+          feedback.textContent = question.hint || "Belum tepat. Coba pikirkan lagi, ya!";
+          feedback.classList.add("try-again");
+          $("#announcement").textContent = feedback.textContent;
+          return;
+        }
+        completeAnswer(question, button);
+      }
+
+      function completeAnswer(question, button) {
+        if (locked) return;
+        locked = true;
+        score++;
+        if (button) button.classList.add("correct");
+        Array.from(answerGrid.children).forEach((choiceButton) => { choiceButton.disabled = true; });
+        const syllableSlotsElement = $("#syllableSlots");
+        if (syllableSlotsElement) {
+          syllableSlotsElement.querySelectorAll("button").forEach((slot) => { slot.disabled = true; });
+        }
+        const cheer = cheers[Math.floor(Math.random() * cheers.length)];
+        const explanation = question.subType === "odd" ? ` ${question.reason}` : "";
+        feedback.textContent = `✨ ${cheer}${explanation}`;
+        $("#announcement").textContent = feedback.textContent;
+        $("#scoreLabel").textContent = `⭐ ${score} bintang`;
+        playCheer();
+        nextTimer = window.setTimeout(() => {
+          questionIndex++;
+          if (questionIndex >= questionCount) finishGame();
+          else renderQuestion();
+        }, 950);
+      }
+
+      function startGame() {
+        if (nextTimer) window.clearTimeout(nextTimer);
+        questions = makeQuestions();
+        questionIndex = 0;
+        score = 0;
+        homeView.classList.add("hidden");
+        gameView.classList.add("active");
+        $("#playContent").classList.remove("hidden");
+        $("#endCard").classList.remove("visible");
+        renderQuestion();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function finishGame() {
+        $("#progressFill").style.width = "100%";
+        progressTrack.setAttribute("aria-valuenow", String(questionCount));
+        $("#playContent").classList.add("hidden");
+        $("#endCard").classList.add("visible");
+        $("#endMessage").textContent = `Kamu menjawab ${score} dari ${questionCount} soal dengan benar. Terus semangat belajar!`;
+        $("#roundLabel").textContent = "Sesi selesai";
+        $("#scoreLabel").textContent = `⭐ ${score} bintang`;
+        $("#announcement").textContent = "Hebat sekali! Semua soal selesai.";
+      }
+
+      function selectGame(game) {
+        selectedGame = game;
+        gameCards.forEach((card) => {
+          const selected = card.dataset.game === game;
+          card.classList.toggle("selected", selected);
+          card.setAttribute("aria-pressed", String(selected));
+        });
+        $("#gameSelect").value = game;
+      }
+
+      function openSettings() {
+        $("#gameSelect").value = selectedGame;
+        $("#difficultySelect").value = difficulty;
+        $("#questionCount").value = String(questionCount);
+        $("#soundToggle").checked = soundEnabled;
+        settingsModal.classList.add("open");
+        $("#closeSettings").focus();
+      }
+
+      function closeSettings() {
+        settingsModal.classList.remove("open");
+        $("#settingsButton").focus();
+      }
+
+      gameCards.forEach((card) => card.addEventListener("click", () => selectGame(card.dataset.game)));
+      $("#listenButton").addEventListener("click", () => {
+        if (questions[questionIndex] && questions[questionIndex].type === "letters") {
+          speakIndonesian(questionSpeech(questions[questionIndex]));
+        }
+      });
+      $("#startButton").addEventListener("click", startGame);
+      $("#againButton").addEventListener("click", startGame);
+      $("#homeButton").addEventListener("click", () => {
+        if (nextTimer) window.clearTimeout(nextTimer);
+        cancelSpeech();
+        gameView.classList.remove("active");
+        homeView.classList.remove("hidden");
+      });
+      $("#settingsButton").addEventListener("click", openSettings);
+      $("#closeSettings").addEventListener("click", closeSettings);
+      $("#soundToggle").addEventListener("change", (event) => {
+        setSoundEnabled(event.target.checked);
+      });
+      $("#soundButton").addEventListener("click", () => {
+        setSoundEnabled(!soundEnabled);
+      });
+      $("#applySettings").addEventListener("click", () => {
+        selectGame($("#gameSelect").value);
+        difficulty = $("#difficultySelect").value;
+        questionCount = Number($("#questionCount").value);
+        setSoundEnabled($("#soundToggle").checked);
+        updateHomeNote();
+        if (gameView.classList.contains("active")) startGame();
+        closeSettings();
+      });
+      $("#resetButton").addEventListener("click", () => {
+        if (nextTimer) window.clearTimeout(nextTimer);
+        if (gameView.classList.contains("active")) {
+          startGame();
+        } else {
+          score = 0;
+          questions = [];
+          updateHomeNote();
+        }
+        closeSettings();
+      });
+      $("#fullscreenButton").addEventListener("click", async () => {
+        try {
+          if (!document.fullscreenElement) await document.documentElement.requestFullscreen();
+          else await document.exitFullscreen();
+        } catch (error) {
+          console.error("Mode layar penuh tidak tersedia.", error);
+          $("#announcement").textContent = "Mode layar penuh tidak tersedia di perangkat ini.";
+        }
+      });
+      settingsModal.addEventListener("click", (event) => {
+        if (event.target === settingsModal) closeSettings();
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && settingsModal.classList.contains("open")) closeSettings();
+      });
+
+      updateHomeNote();
+    })();
+  </script>
+
+
+</body></html>
