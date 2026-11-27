@@ -130,6 +130,15 @@
     .syllable-hint { color: var(--muted); font-size: 12px; text-align: center; }
     .odd-objects { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; }
     .odd-object { display: grid; width: 70px; height: 70px; place-items: center; border-radius: 17px; background: #fff; box-shadow: 0 3px 9px #e1e1ef; font-size: 38px; }
+    .word-puzzle-slots { display: flex; width: 100%; justify-content: center; flex-wrap: wrap; gap: 7px; }
+    .word-puzzle-slot {
+      display: grid; width: clamp(42px, 11vw, 58px); height: clamp(42px, 11vw, 58px); place-items: center;
+      border: 2px dashed #bbb5eb; border-radius: 13px; background: #fff; color: #6257c4;
+      cursor: pointer; font-size: clamp(18px, 5vw, 24px); font-weight: 900;
+    }
+    .word-puzzle-slot.filled { border-style: solid; background: #f0eeff; }
+    .word-puzzle-tile { cursor: grab; touch-action: none; }
+    .word-puzzle-tile.dragging { opacity: .85; transform: scale(1.05); cursor: grabbing; z-index: 20; }
     .group-label { width: 100%; color: var(--muted); font-size: 12px; font-weight: 800; text-align: center; }
     .compare-groups { display: grid; width: 100%; grid-template-columns: 1fr 1fr; gap: 12px; }
     .compare-group { min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 7px; }
@@ -276,6 +285,10 @@
             <div class="game-card-top"><span class="game-icon" style="background:#e9e7ff" aria-hidden="true">🔷</span><span class="game-tag">Bentuk &amp; Pola</span></div>
             <h3>Pola &amp; Kelompok</h3><p>Lanjutkan urutan atau cari benda yang berbeda.</p>
           </button>
+          <button class="game-card" type="button" data-game="word-puzzle" aria-pressed="false">
+            <div class="game-card-top"><span class="game-icon" style="background:#ffe8ef" aria-hidden="true">🔤</span><span class="game-tag">Puzzle Kata</span></div>
+            <h3>Rangkai Kata</h3><p>Tarik huruf acak menjadi kata yang tepat.</p>
+          </button>
         </div>
         <div class="start-row">
           <span class="teacher-note" id="sessionNote">5 soal · Mudah · Siap dimainkan di kelas</span>
@@ -325,6 +338,7 @@
           <option value="letters">Susun Suku Kata</option>
           <option value="math">Angka &amp; Logika</option>
           <option value="shapes">Pola &amp; Kelompok</option>
+          <option value="word-puzzle">Rangkai Kata</option>
         </select>
       </div>
       <div class="field">
@@ -364,7 +378,8 @@
       const games = {
         letters: { name: "Susun Suku Kata", prompt: "Susun suku kata menjadi nama benda.", sub: "Lihat gambar, lalu lengkapi atau susun potongannya." },
         math: { name: "Angka & Logika", prompt: "Ayo pikirkan jawabannya!", sub: "Gunakan gambar untuk membantu berhitung." },
-        shapes: { name: "Pola & Kelompok", prompt: "Perhatikan gambar baik-baik.", sub: "Lanjutkan pola atau cari yang berbeda." }
+        shapes: { name: "Pola & Kelompok", prompt: "Perhatikan gambar baik-baik.", sub: "Lanjutkan pola atau cari yang berbeda." },
+        "word-puzzle": { name: "Rangkai Kata", prompt: "Rangkai huruf menjadi kata!", sub: "Tarik atau ketuk huruf agar sesuai dengan gambar." }
       };
       const letterItems = [
         { emoji: "🍉", word: "Semangka", parts: ["SE", "MANG", "KA"] },
@@ -559,9 +574,39 @@
         });
       }
 
+      function makeWordPuzzleQuestions() {
+        const words = [
+          { word: "kucing", emoji: "🐱" },
+          { word: "rumah", emoji: "🏠" },
+          { word: "bunga", emoji: "🌸" },
+          { word: "pisang", emoji: "🍌" },
+          { word: "ikan", emoji: "🐟" },
+          { word: "topi", emoji: "🧢" },
+          { word: "baju", emoji: "👕" },
+          { word: "gajah", emoji: "🐘" }
+        ];
+        return shuffle(words).slice(0, questionCount).map((entry) => {
+          const letters = entry.word.toUpperCase().split("");
+          let tiles = shuffle(letters.map((letter, index) => ({ letter, id: index })));
+          if (tiles.map((tile) => tile.letter).join("") === entry.word.toUpperCase()) {
+            tiles = tiles.reverse();
+          }
+          return {
+            type: "word-puzzle",
+            subType: "letters",
+            item: entry,
+            tiles,
+            answer: entry.word,
+            choices: [],
+            hint: "Perhatikan gambar, lalu rangkai huruf sesuai namanya."
+          };
+        });
+      }
+
       function makeQuestions() {
         if (selectedGame === "letters") return makeLetterQuestions();
         if (selectedGame === "math") return makeMathQuestions();
+        if (selectedGame === "word-puzzle") return makeWordPuzzleQuestions();
         return makeShapeQuestions();
       }
 
@@ -716,6 +761,17 @@
       }
 
       function renderVisual(question) {
+        if (question.type === "word-puzzle") {
+          visualStage.innerHTML = `
+            <div class="syllable-board">
+              <div class="picture-emoji" aria-hidden="true">${question.item.emoji}</div>
+              <div class="word-puzzle-slots" id="wordPuzzleSlots"></div>
+              <span class="syllable-hint">Tarik huruf ke kotak atau ketuk hurufnya.</span>
+            </div>`;
+          $("#questionPrompt").textContent = games["word-puzzle"].prompt;
+          $("#questionSub").textContent = "Rangkai huruf sesuai nama gambar.";
+          return;
+        }
         if (question.type === "letters") {
           const parts = question.item.parts.map((part, index) => {
             const value = question.subType === "assemble"
@@ -772,6 +828,93 @@
         visualStage.innerHTML = `<div class="count-objects">${sequenceHtml}<span class="math-symbol" aria-hidden="true">?</span></div>`;
         $("#questionPrompt").textContent = games.shapes.prompt;
         $("#questionSub").textContent = "Perhatikan bentuk dan warnanya.";
+      }
+
+      function renderWordPuzzleSlots(question) {
+        const container = $("#wordPuzzleSlots");
+        if (!container) return;
+        container.innerHTML = question.answer.split("").map((_, index) => {
+          const tileIndex = assemblySlots[index];
+          const value = tileIndex === null ? "" : question.tiles[tileIndex].letter;
+          return `<button class="word-puzzle-slot ${tileIndex === null ? "" : "filled"}" type="button" data-word-slot="${index}" aria-label="Kotak huruf ${index + 1}: ${value || "kosong"}">${value}</button>`;
+        }).join("");
+        container.querySelectorAll("[data-word-slot]").forEach((slot) => {
+          slot.addEventListener("click", () => {
+            if (locked) return;
+            const slotIndex = Number(slot.dataset.wordSlot);
+            const tileIndex = assemblySlots[slotIndex];
+            if (tileIndex === null) return;
+            assemblySlots[slotIndex] = null;
+            const tileButton = answerGrid.querySelector(`[data-word-tile-index="${tileIndex}"]`);
+            if (tileButton) tileButton.disabled = false;
+            renderWordPuzzleSlots(question);
+          });
+        });
+      }
+
+      function checkWordPuzzle(question, button) {
+        if (!assemblySlots.includes(null)) {
+          const word = assemblySlots.map((index) => question.tiles[index].letter).join("").toLocaleLowerCase("id-ID");
+          if (word === question.answer.toLocaleLowerCase("id-ID")) {
+            completeAnswer(question, button);
+          } else {
+            feedback.textContent = "Belum tepat. Geser atau tukar urutan hurufnya.";
+            feedback.className = "feedback try-again";
+          }
+        }
+      }
+
+      function selectWordTile(button, tileIndex, question) {
+        if (locked) return;
+        const existingSlot = assemblySlots.indexOf(tileIndex);
+        if (existingSlot !== -1) {
+          assemblySlots[existingSlot] = null;
+          button.disabled = false;
+          renderWordPuzzleSlots(question);
+          return;
+        }
+        const emptySlot = assemblySlots.indexOf(null);
+        if (emptySlot === -1) return;
+        assemblySlots[emptySlot] = tileIndex;
+        button.disabled = true;
+        renderWordPuzzleSlots(question);
+        checkWordPuzzle(question, button);
+      }
+
+      function enableWordTileDrag(button, tileIndex, question) {
+        let startX = 0;
+        let startY = 0;
+        button.addEventListener("pointerdown", (event) => {
+          if (locked || button.disabled) return;
+          startX = event.clientX;
+          startY = event.clientY;
+          button.setPointerCapture(event.pointerId);
+          button.classList.add("dragging");
+        });
+        button.addEventListener("pointermove", (event) => {
+          if (!button.classList.contains("dragging")) return;
+          const dx = event.clientX - startX;
+          const dy = event.clientY - startY;
+          button.style.transform = `translate(${dx}px, ${dy}px) scale(1.05)`;
+        });
+        button.addEventListener("pointerup", (event) => {
+          if (!button.classList.contains("dragging")) return;
+          button.classList.remove("dragging");
+          button.style.transform = "";
+          const slots = Array.from(document.querySelectorAll("[data-word-slot]"));
+          const target = slots.find((slot) => {
+            const rect = slot.getBoundingClientRect();
+            return event.clientX >= rect.left && event.clientX <= rect.right
+              && event.clientY >= rect.top && event.clientY <= rect.bottom;
+          });
+          if (!target) return;
+          const slotIndex = Number(target.dataset.wordSlot);
+          if (assemblySlots[slotIndex] !== null) return;
+          assemblySlots[slotIndex] = tileIndex;
+          button.disabled = true;
+          renderWordPuzzleSlots(question);
+          checkWordPuzzle(question, button);
+        });
       }
 
       function choiceLabel(question, choice) {
@@ -839,7 +982,21 @@
         $("#questionSub").textContent = games[selectedGame].sub;
         renderVisual(question);
         answerGrid.innerHTML = "";
-        if (question.type === "letters" && question.subType === "assemble") {
+        if (question.type === "word-puzzle") {
+          assemblySlots = new Array(question.answer.length).fill(null);
+          renderWordPuzzleSlots(question);
+          question.tiles.forEach((tile, index) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "answer-button word-puzzle-tile";
+            button.textContent = tile.letter;
+            button.setAttribute("aria-label", `Huruf ${tile.letter}, pilihan ${index + 1}`);
+            button.dataset.wordTileIndex = String(index);
+            button.addEventListener("click", () => selectWordTile(button, index, question));
+            enableWordTileDrag(button, index, question);
+            answerGrid.appendChild(button);
+          });
+        } else if (question.type === "letters" && question.subType === "assemble") {
           assemblySlots = new Array(question.item.parts.length).fill(null);
           renderAssemblySlots(question);
           question.tiles.forEach((tile, index) => {
